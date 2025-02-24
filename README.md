@@ -1,11 +1,11 @@
-# Sysane Project
+# Clube.vc Project
 
 ## Descrição
 Sysane é um projeto de API RESTful com frontend em Next.js e backend em FastAPI, integrado ao PostgreSQL.
 
 ## Estrutura
-- **server/**: Backend em FastAPI.
-- **client/**: Frontend em Next.js.
+- **back/**: Backend em FastAPI.
+- **front/**: Frontend em Next.js.
 
 ## Instalação
 

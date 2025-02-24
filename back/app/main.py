@@ -38,3 +38,7 @@ async def shutdown_event():
     """Para o agendador ao desligar o servidor."""
     from app.tasks.scheduler import scheduler
     scheduler.shutdown()
+
+@app.get("/")
+async def read_root():
+    return {"message": "Bem-vindo à API!"}

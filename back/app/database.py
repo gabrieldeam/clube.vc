@@ -1,15 +1,26 @@
+import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from app.config import settings
+from sqlalchemy.orm import declarative_base, sessionmaker
 
-SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
+load_dotenv()
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+USER = os.getenv("user")
+PASSWORD = os.getenv("password")
+HOST = os.getenv("host")
+PORT = os.getenv("port")
+DBNAME = os.getenv("dbname")
+
+DATABASE_URL = f"postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}"
+engine = create_engine(DATABASE_URL)
+
+# Definição da Base para os modelos
 Base = declarative_base()
 
-# Dependência
+# Criação da sessão local
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Função para injetar a sessão nos endpoints
 def get_db():
     db = SessionLocal()
     try:

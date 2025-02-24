@@ -1,0 +1,19 @@
+{
+    "name": "Python FastAPI Codespace",
+    "build": {
+      "dockerfile": "Dockerfile",
+      "context": ".."
+    },
+    "customizations": {
+      "vscode": {
+        "settings": {
+          "terminal.integrated.shell.linux": "/bin/bash"
+        },
+        "extensions": [
+          "ms-python.python"
+        ]
+      }
+    },
+    "postCreateCommand": "python -m pip install --upgrade pip && pip install -r requirements.txt"
+  }
+  
