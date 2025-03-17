@@ -9,10 +9,6 @@ def create_user(db: Session, user: UserCreate):
         name=user.name,
         email=user.email,
         phone=user.phone,
-        company_name=user.company_name,
-        company_size=user.company_size,
-        work_area=user.work_area,
-        department=user.department,
         hashed_password=hashed_pw,
         accepted_privacy_policy=user.accepted_privacy_policy,
     )

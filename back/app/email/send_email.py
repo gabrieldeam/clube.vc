@@ -36,3 +36,25 @@ def send_verification_email(to_email: str, name: str, verification_url: str):
             server.send_message(message)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Falha ao enviar email: {str(e)}")
+
+
+def send_subscription_email(to_email: str, name: str):
+    try:
+        template_path = "app/email/templates/subscription_email.html"
+        with open(template_path, "r", encoding="utf-8") as f:
+            template = Template(f.read())
+        content = template.render(name=name)
+
+        message = EmailMessage()
+        message["Subject"] = "Bem-vindo ao Clube!"
+        message["From"] = MAIL_USERNAME
+        message["To"] = to_email
+        message.set_content(content, subtype="html")
+
+        with smtplib.SMTP(MAIL_HOST, MAIL_PORT) as server:
+            if MAIL_USE_TLS:
+                server.starttls()
+            server.login(MAIL_USERNAME, MAIL_PASSWORD)
+            server.send_message(message)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Falha ao enviar email: {str(e)}")

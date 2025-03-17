@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { registerUser, checkEmailExists } from "../../../services/auth";
-import { CompanySize, WorkArea, Department } from "../../../types/enums";
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -11,10 +10,6 @@ export default function RegisterForm() {
     email: "",
     phone: "",
     password: "",
-    company_name: "",
-    company_size: CompanySize.SOLE_PROPRIETOR,
-    work_area: WorkArea.IT,
-    department: Department.IT,
     accepted_privacy_policy: false,
   });
 
@@ -122,58 +117,6 @@ export default function RegisterForm() {
           placeholder="Telefone"
           required
         />
-        <input
-          type="company_name"
-          name="company_name"
-          onChange={handleChange}
-          placeholder="Nome da empresa"
-          required
-        />
-        <select
-          name="company_size"
-          value={formData.company_size}
-          onChange={handleChange}
-          required
-        >
-          <option value="" disabled>
-            Selecione o tamanho da empresa
-          </option>
-          {Object.values(CompanySize).map((size) => (
-            <option key={size} value={size}>
-              {size}
-            </option>
-          ))}
-        </select>
-        <select
-          name="work_area"
-          value={formData.work_area}
-          onChange={handleChange}
-          required
-        >
-          <option value="" disabled>
-            Selecione sua área de trabalho
-          </option>
-          {Object.values(WorkArea).map((area) => (
-            <option key={area} value={area}>
-              {area}
-            </option>
-          ))}
-        </select>
-        <select
-          name="department"
-          value={formData.department}
-          onChange={handleChange}
-          required
-        >
-          <option value="" disabled>
-            Selecione seu departamento
-          </option>
-          {Object.values(Department).map((dept) => (
-            <option key={dept} value={dept}>
-              {dept}
-            </option>
-          ))}
-        </select>
         <input
           type="password"
           name="password"

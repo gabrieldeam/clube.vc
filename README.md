@@ -12,12 +12,16 @@ Sysane é um projeto de API RESTful com frontend em Next.js e backend em FastAPI
 ### Backend
 1. Ative o ambiente virtual:
    ```bash
-   cd server
+   cd back
    source venv/bin/activate  # Linux/macOS
    venv\Scripts\activate     # Windows
 
 2. Instale as dependências:   
    pip install -r requirements.txt
+
+   2.1. Atualizar as dependências:   
+      pip freeze > requirements.txt
+
 
 3. Configure o banco no arquivo .env.
 
