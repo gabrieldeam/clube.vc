@@ -8,7 +8,6 @@ from app.models.category import Category
 from app.dependencies import get_current_admin, get_current_user
 
 router = APIRouter(
-    prefix="/categories",
     tags=["Categories"]
 )
 

@@ -51,3 +51,9 @@ export const resendVerificationEmail = async (email: string) => {
   const response = await api.post("auth/resend-verification-email", { email });
   return response.data;
 };
+
+// Verificar token
+export const verifyToken = async () => {
+  const response = await api.get("auth/verify-token");
+  return response.data;
+};

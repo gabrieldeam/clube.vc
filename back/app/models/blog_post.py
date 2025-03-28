@@ -7,6 +7,7 @@ from app.database import Base
 
 class BlogPost(Base):
     __tablename__ = "blog_posts"
+    
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     club_id = Column(UUID(as_uuid=True), ForeignKey("clubs.id"), nullable=False)
     title = Column(String, nullable=False)
@@ -14,3 +15,6 @@ class BlogPost(Base):
     subtitle = Column(String, nullable=True)
     content = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relacionamento inverso com Club
+    club = relationship("Club", back_populates="blog_posts")

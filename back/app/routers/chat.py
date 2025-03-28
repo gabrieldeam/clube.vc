@@ -11,7 +11,6 @@ from app.schemas.direct_message import DirectMessageCreate, DirectMessageRespons
 from app.schemas.group_message import GroupMessageCreate, GroupMessageResponse
 
 router = APIRouter(
-    prefix="/chat",
     tags=["Chat"]
 )
 

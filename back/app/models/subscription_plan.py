@@ -2,10 +2,12 @@ import uuid
 from sqlalchemy import Column, String, Numeric, ForeignKey, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+from app.models.subscription_benefit import SubscriptionBenefit
 from app.database import Base
 
 class SubscriptionPlan(Base):
     __tablename__ = "subscription_plans"
+    
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     club_id = Column(UUID(as_uuid=True), ForeignKey("clubs.id"), nullable=False)
     name = Column(String, nullable=False)
@@ -13,3 +15,7 @@ class SubscriptionPlan(Base):
     price = Column(Numeric(10,2), nullable=False)
     
     benefits = relationship("SubscriptionBenefit", back_populates="plan", cascade="all, delete-orphan")
+    club = relationship("Club", back_populates="subscription_plans")
+    
+    # (Opcional) Se precisar acessar as assinaturas deste plano:
+    subscriptions = relationship("ClubSubscription", back_populates="plan", cascade="all, delete-orphan")

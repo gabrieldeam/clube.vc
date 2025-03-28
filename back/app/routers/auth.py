@@ -1,5 +1,6 @@
 import uuid
-from fastapi import APIRouter, Depends, HTTPException
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.user import UserCreate, UserLogin, ForgotPasswordRequest, ResetPasswordRequest
@@ -36,6 +37,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email já cadastrado.")
     
     db_user = create_user(db, user)
+    
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     verification_token = jwt.encode(
         {"sub": str(db_user.id), "exp": expire}, 
@@ -44,7 +46,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     )
 
     verification_url = f"{os.getenv('FRONTEND_URL')}/auth/verify-email?token={verification_token}"
-    send_verification_email(db_user.email, db_user.name, verification_url)
+    # send_verification_email(db_user.email, db_user.name, verification_url)
 
     return {"message": "Usuário registrado. Verifique seu email para ativar a conta."}
 
@@ -202,3 +204,41 @@ def resend_verification_email(email: str, db: Session = Depends(get_db)):
 
     return {"message": "Email de verificação reenviado com sucesso."}
 
+@router.get("/verify-token")
+def verify_token(request: Request, db: Session = Depends(get_db)):
+    # Tenta obter o token do header "Authorization"
+    auth_header: Optional[str] = request.headers.get("Authorization")
+    token = None
+    if auth_header:
+        token = auth_header.replace("Bearer ", "").strip()
+    else:
+        # Se não tiver header, tenta obter do cookie "access_token"
+        token = request.cookies.get("access_token")
+        if token:
+            token = token.replace("Bearer ", "").strip()
+    
+    if not token:
+        raise HTTPException(status_code=400, detail="Token não fornecido.")
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=400, detail="Token inválido: 'sub' não encontrado.")
+        
+        user = db.query(User).filter(User.id == uuid.UUID(user_id)).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+        
+        return {
+            "authenticated": True,
+            "user": {
+                "id": str(user.id),
+                "email": user.email,
+                "name": user.name,
+            },
+        }
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expirado.")
+    except jwt.JWTError as e:
+        raise HTTPException(status_code=401, detail=f"Token inválido: {str(e)}")

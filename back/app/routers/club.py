@@ -9,7 +9,6 @@ from app.models.club import Club
 from app.dependencies import get_current_user
 
 router = APIRouter(
-    prefix="/clubs",
     tags=["Clubs"]
 )
 

@@ -1,0 +1,32 @@
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.label {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.input {
+  width: 100%;
+  height: 45px;
+  background-color: #E0E0E0;
+  border: none;
+  box-sizing: border-box;
+  border-radius: 10px;
+  text-align: center; 
+  color: #000;    
+  font-weight: bold;
+}
+
+.input::placeholder {
+  color: #000;  
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+}

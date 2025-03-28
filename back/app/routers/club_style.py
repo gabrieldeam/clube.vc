@@ -14,7 +14,6 @@ from app.schemas.club_style import ClubStyleResponse
 from fastapi.staticfiles import StaticFiles
 
 router = APIRouter(
-    prefix="/club_styles",
     tags=["ClubStyles"]
 )
 

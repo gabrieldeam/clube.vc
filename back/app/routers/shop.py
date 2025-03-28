@@ -11,7 +11,6 @@ from app.schemas.shop_item import ShopItemCreate, ShopItemResponse, ShopItemUpda
 from app.dependencies import get_current_user
 
 router = APIRouter(
-    prefix="/shop",
     tags=["Shop"]
 )
 

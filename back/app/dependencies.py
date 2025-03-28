@@ -1,6 +1,5 @@
 import uuid
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends, HTTPException, status, Request
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 import os
@@ -13,9 +12,22 @@ load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY", "default_secret_key")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+def get_token_from_cookie(request: Request) -> str:
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token não encontrado no cookie"
+        )
+    # Remova o prefixo "Bearer " se existir
+    if token.startswith("Bearer "):
+        token = token[len("Bearer "):]
+    return token
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+from jose import jwt, JWTError
+import uuid
+
+def get_current_user(token: str = Depends(get_token_from_cookie), db: Session = Depends(get_db)) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Credenciais inválidas",
@@ -34,7 +46,11 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise credentials_exception
     return user
 
+
 def get_current_admin(user: User = Depends(get_current_user)) -> User:
     if not user.is_admin:
-        raise HTTPException(status_code=403, detail="Acesso negado: requer privilégios de administrador")
+        raise HTTPException(
+            status_code=403, 
+            detail="Acesso negado: requer privilégios de administrador"
+        )
     return user

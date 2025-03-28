@@ -21,12 +21,19 @@ class Club(Base):
 
     # Relação com o estilo do clube
     style = relationship("ClubStyle", back_populates="club", uselist=False)
+    
     # Relação com os itens da loja
     shop_items = relationship("ShopItem", back_populates="club", cascade="all, delete-orphan")
     
     # Relação com posts do blog
     blog_posts = relationship("BlogPost", back_populates="club", cascade="all, delete-orphan")
     
-    # Relação com chat direto e em grupo (opcional)
+    # Relação com chat direto e em grupo
     direct_messages = relationship("DirectMessage", back_populates="club", cascade="all, delete-orphan")
     group_messages = relationship("GroupMessage", back_populates="club", cascade="all, delete-orphan")
+    
+    # (Opcional) Relação com planos de assinatura, se necessário
+    subscription_plans = relationship("SubscriptionPlan", back_populates="club", cascade="all, delete-orphan")
+    
+    # (Opcional) Relação com assinaturas do clube
+    subscriptions = relationship("ClubSubscription", back_populates="club", cascade="all, delete-orphan")

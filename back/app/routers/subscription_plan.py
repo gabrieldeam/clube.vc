@@ -7,7 +7,6 @@ from app.models.subscription_plan import SubscriptionPlan
 from app.dependencies import get_current_user
 
 router = APIRouter(
-    prefix="/subscription_plans",
     tags=["SubscriptionPlans"]
 )
 

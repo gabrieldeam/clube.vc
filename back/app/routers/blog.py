@@ -9,7 +9,6 @@ from app.schemas.blog_post import BlogPostCreate, BlogPostResponse
 from app.dependencies import get_current_user
 
 router = APIRouter(
-    prefix="/blog",
     tags=["Blog"]
 )
 

@@ -26,4 +26,4 @@ class ClubStyle(Base):
     
     # Relacionamento com os itens de infos
     infos = relationship("ClubStyleInfo", back_populates="club_style", cascade="all, delete-orphan")
-    club = relationship("Club", back_populates="style")  # Relação inversa para acessar o clube
+    club = relationship("Club", back_populates="style")

@@ -8,7 +8,6 @@ from app.dependencies import get_current_user
 from app.email.send_email import send_subscription_email
 
 router = APIRouter(
-    prefix="/club_subscriptions",
     tags=["ClubSubscriptions"]
 )
 
