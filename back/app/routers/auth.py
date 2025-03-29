@@ -1,6 +1,6 @@
 import uuid
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.user import UserCreate, UserLogin, ForgotPasswordRequest, ResetPasswordRequest
@@ -242,3 +242,10 @@ def verify_token(request: Request, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Token expirado.")
     except jwt.JWTError as e:
         raise HTTPException(status_code=401, detail=f"Token inválido: {str(e)}")
+    
+    
+@router.post("/logout")
+def logout(response: Response):
+    # Remove o cookie "access_token"
+    response.delete_cookie(key="access_token", path="/")
+    return {"message": "Logout realizado com sucesso."}

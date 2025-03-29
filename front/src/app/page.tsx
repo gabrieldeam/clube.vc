@@ -1,37 +1,15 @@
 "use client";
 
-import styles from "./page.module.css";
-import LoginForm from "@/components/Login/LoginForm";
+import useAuth from "@/hook/useAuth";
+import LoginPage from "@/components/LoginPage/LoginPage";
+import Business from "@/components/Business/Business";
 
 export default function Home() {
-  return (
-    <section className={styles.container}>
+  const { authStatus, loading } = useAuth();
 
-      <div className={styles.left}>
-        <div className={styles.leftContainer}>
-          <img src="/clubeLogo.svg" alt="Clube Logo" className={styles.logo} />        
-          <div className={styles.loginContainer}>
-            <p className={styles.loginText}>
-              Vendedores, monetizem suas paixões. Usuários, acessem conteúdos exclusivos. Crie sua conta na nossa plataforma hoje mesmo!
-            </p>
-            <LoginForm />
-          </div>
-        </div>
-      </div>
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
 
-      <div className={styles.right}>
-        <header className={styles.header}>
-          <nav>
-            <ul className={styles.navList}>
-              <li><a href="#">Preço</a></li>
-              <li><a href="#">Como Funcion</a></li>
-              <li><a href="#">Manifesto</a></li>
-            </ul>
-          </nav>
-        </header>
-        <img src="/imageHome.png" alt="Imagem Home" className={styles.imageHome} />
-        {/* Outras seções da coluna verde podem ser adicionadas aqui */}
-      </div>
-    </section>
-  );
+  return authStatus.authenticated ? <Business /> : <LoginPage />;
 }

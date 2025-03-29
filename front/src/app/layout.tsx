@@ -1,6 +1,6 @@
 // app/layout.tsx
 import "./globals.css";
-import { UserFlowProvider } from "../context/UserFlowContext";
+import { AuthProvider } from "../context/AuthContext";
 
 export default function RootLayout({
   children,
@@ -11,9 +11,9 @@ export default function RootLayout({
     <html>
       <head />
       <body>
-        <UserFlowProvider>
+        <AuthProvider>
           {children}
-        </UserFlowProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,15 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { getClub } from "../../../services/club";
-import { getCategory } from "../../../services/category";
+import TopMenu from "@/components/TopMenu/TopMenu";
+import { getClub, updateClub, listClubs, deleteClub } from "../../../services/club";
+import { getCategory, listCategories } from "../../../services/category";
 import { listSubscriptionPlans, createSubscriptionPlan } from "../../../services/subscriptionPlan";
-import { subscribeToClub } from "../../../services/clubSubscription";
 import { ClubResponse } from "../../../types/club";
 import { CategoryResponse } from "../../../types/category";
-import { SubscriptionPlanResponse, SubscriptionPlanCreate, SubscriptionPlanBenefit } from "../../../types/subscriptionPlan";
+import {
+  SubscriptionPlanResponse,
+  SubscriptionPlanCreate,
+  SubscriptionPlanBenefit,
+} from "../../../types/subscriptionPlan";
+
+import styles from "./ClubDetail.module.css";
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
@@ -17,13 +23,23 @@ export default function ClubDetailPage() {
   const { clubId } = useParams() as { clubId: string };
   const router = useRouter();
 
-  // Dados do clube e categoria
+  // Dados do clube e categoria (exibidos no cabeçalho)
   const [club, setClub] = useState<ClubResponse | null>(null);
-  const [category, setCategory] = useState<CategoryResponse | null>(null);
+  const [clubCategory, setClubCategory] = useState<CategoryResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Controle dos tabs: "details" | "plans" | "createPlan" | "subscribe"
-  const [activeTab, setActiveTab] = useState<"details" | "plans" | "createPlan" | "subscribe">("details");
+  // Controle dos tabs:
+  // "details" | "plans" | "createPlan" | "editClub" | "estilo" | "blog" | "grupoConversas" | "engajamentos"
+  const [activeTab, setActiveTab] = useState<
+    | "details"
+    | "plans"
+    | "createPlan"
+    | "editClub"
+    | "estilo"
+    | "blog"
+    | "grupoConversas"
+    | "engajamentos"
+  >("details");
 
   // Dados dos planos de assinatura
   const [plans, setPlans] = useState<SubscriptionPlanResponse[]>([]);
@@ -36,9 +52,40 @@ export default function ClubDetailPage() {
   const [planBenefits, setPlanBenefits] = useState<SubscriptionPlanBenefit[]>([]);
   const [benefitText, setBenefitText] = useState("");
 
-  // Estado para feedback na assinatura
-  const [subscribeMessage, setSubscribeMessage] = useState("");
+  // Estados para edição do clube (aba "editClub")
+  const [editName, setEditName] = useState("");
+  const [editCategoryId, setEditCategoryId] = useState<number>(0);
+  const [editLogoFile, setEditLogoFile] = useState<File | null>(null);
+  const [editCategories, setEditCategories] = useState<CategoryResponse[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Estado para listar clubes no select do header
+  const [clubsList, setClubsList] = useState<ClubResponse[]>([]);
+
+  // Estado para dropdown de opções
+  const [showOptionsDropdown, setShowOptionsDropdown] = useState(false);
+  // Ref para o dropdown
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Estado para modal de confirmação para exclusão (permanece modal)
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
+
+  // Fecha o dropdown ao clicar fora
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowOptionsDropdown(false);
+      }
+    }
+    if (showOptionsDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showOptionsDropdown]);
+
+  // Carrega dados do clube
   useEffect(() => {
     async function fetchClub() {
       try {
@@ -53,12 +100,13 @@ export default function ClubDetailPage() {
     fetchClub();
   }, [clubId]);
 
+  // Carrega categoria do clube (para exibição no cabeçalho)
   useEffect(() => {
     async function fetchCategory() {
       if (club && club.category_id) {
         try {
           const data = await getCategory(club.category_id);
-          setCategory(data);
+          setClubCategory(data);
         } catch (error) {
           console.error("Erro ao buscar categoria:", error);
         }
@@ -67,9 +115,22 @@ export default function ClubDetailPage() {
     fetchCategory();
   }, [club]);
 
-  // Busca os planos quando o usuário acessar a aba "plans" ou "subscribe"
+  // Carrega a lista de clubes para o select do header
   useEffect(() => {
-    if (activeTab === "plans" || activeTab === "subscribe") {
+    async function fetchClubs() {
+      try {
+        const data = await listClubs();
+        setClubsList(data);
+      } catch (error) {
+        console.error("Erro ao listar clubes:", error);
+      }
+    }
+    fetchClubs();
+  }, []);
+
+  // Ao entrar na aba de assinaturas, carrega os planos
+  useEffect(() => {
+    if (activeTab === "plans") {
       async function fetchPlans() {
         setPlansLoading(true);
         try {
@@ -85,7 +146,24 @@ export default function ClubDetailPage() {
     }
   }, [activeTab, clubId]);
 
-  // Funções para o formulário de criação de plano
+  // Ao entrar na aba de edição, inicializa os estados com os dados do clube e carrega as categorias
+  useEffect(() => {
+    if (activeTab === "editClub" && club) {
+      setEditName(club.name);
+      setEditCategoryId(club.category_id);
+      async function fetchCategories() {
+        try {
+          const data = await listCategories();
+          setEditCategories(data);
+        } catch (error) {
+          console.error("Erro ao carregar categorias:", error);
+        }
+      }
+      fetchCategories();
+    }
+  }, [activeTab, club]);
+
+  // Funções do formulário de criação de plano
   const handleAddBenefit = () => {
     if (benefitText.trim()) {
       setPlanBenefits((prev) => [...prev, { benefit: benefitText }]);
@@ -108,30 +186,66 @@ export default function ClubDetailPage() {
         benefits: planBenefits,
       };
       await createSubscriptionPlan(planData);
-      // Atualiza a lista de planos
       const updatedPlans = await listSubscriptionPlans(clubId);
       setPlans(updatedPlans);
-      // Limpa os campos do formulário
       setPlanName("");
       setPlanDescription("");
       setPlanPrice(0);
       setPlanBenefits([]);
       setBenefitText("");
-      // Volta para a aba de planos
       setActiveTab("plans");
     } catch (error) {
       console.error("Erro ao criar plano:", error);
     }
   };
 
-  // Função para assinatura de um plano
-  const handleSubscribe = async (planId: string) => {
+  // Funções para edição do clube
+  const handleEditFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setEditLogoFile(e.target.files[0]);
+    }
+  };
+
+  const handleEditDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleEditDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setEditLogoFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleUpdateClub = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      await subscribeToClub({ club_id: clubId, plan_id: planId });
-      setSubscribeMessage("Assinatura realizada com sucesso!");
+      await updateClub(clubId, { name: editName, category_id: editCategoryId }, editLogoFile || undefined);
+      const updatedClub = await getClub(clubId);
+      setClub(updatedClub);
+      setActiveTab("details");
     } catch (error) {
-      console.error("Erro ao assinar:", error);
-      setSubscribeMessage("Erro ao assinar o plano.");
+      console.error("Erro ao atualizar clube:", error);
+    }
+  };
+
+  // Função para excluir clube
+  const handleDeleteClub = async () => {
+    try {
+      await deleteClub(clubId);
+      router.push("/clubs");
+    } catch (error) {
+      console.error("Erro ao excluir clube:", error);
+    }
+  };
+
+  // Lida com a seleção de outro clube no select do header
+  const handleClubSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedClubId = e.target.value;
+    if (selectedClubId) {
+      router.push(`/clubs/${selectedClubId}`);
     }
   };
 
@@ -139,157 +253,326 @@ export default function ClubDetailPage() {
   if (!club) return <p>Clube não encontrado.</p>;
 
   return (
-    <div>
-      <button onClick={() => router.back()}>Voltar</button>
-      <h1>{club.name}</h1>
-      {club.logo && (
-        <img src={`${backendUrl}${club.logo}`} alt={club.name} width={100} />
-      )}
-      <p>ID: {club.id}</p>
-      <p>Categoria: {category ? category.name : `ID ${club.category_id}`}</p>
-      <div style={{ margin: "1rem 0" }}>
-        <Link href={`/clubs/${club.id}/edit`}>
-          <button>Editar Clube</button>
-        </Link>
-      </div>
-
-      {/* Menu de navegação (tabs) */}
-      <nav style={{ marginBottom: "1rem" }}>
-        <button onClick={() => setActiveTab("details")} disabled={activeTab === "details"}>
-          Detalhes
-        </button>
-        <button onClick={() => setActiveTab("plans")} disabled={activeTab === "plans"}>
-          Planos
-        </button>
-        <button onClick={() => setActiveTab("createPlan")} disabled={activeTab === "createPlan"}>
-          Criar Plano
-        </button>
-        <button onClick={() => setActiveTab("subscribe")} disabled={activeTab === "subscribe"}>
-          Assinar
-        </button>
-      </nav>
-
-      {/* Conteúdo de cada aba */}
-      {activeTab === "details" && (
-        <div>
-          <h2>Detalhes do Clube</h2>
-          <p>Aqui estão as informações gerais do clube.</p>
-          {/* Outras informações ou seções que desejar */}
-        </div>
-      )}
-
-      {activeTab === "plans" && (
-        <div>
-          <h2>Planos de Assinatura</h2>
-          {plansLoading ? (
-            <p>Carregando planos...</p>
-          ) : plans.length === 0 ? (
-            <p>Nenhum plano encontrado.</p>
-          ) : (
-            <ul>
-              {plans.map((plan) => (
-                <li key={plan.id} style={{ marginBottom: "1rem" }}>
-                  <strong>{plan.name}</strong> - R$ {plan.price.toFixed(2)}
-                  <p>{plan.description}</p>
-                  {plan.benefits?.length && (
-                    <ul>
-                      {plan.benefits.map((b, idx) => (
-                        <li key={idx}>{b.benefit}</li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
+    <>
+      <TopMenu />
+      <div className={styles.pageContainer}>
+        {/* Cabeçalho Grande */}
+        <header className={styles.headerInfo}>
+          <div className={styles.leftHeader}>
+            {club.logo && (
+              <img src={`${backendUrl}${club.logo}`} alt={club.name} className={styles.clubLogo} />
+            )}
+            <div className={styles.clubData}>
+              <h1 className={styles.clubName}>{club.name}</h1>
+              <p className={styles.clubCategory}>
+                {clubCategory ? clubCategory.name : `ID ${club.category_id}`}
+              </p>
+              <p className={styles.clubId}>ID: {club.id}</p>
+            </div>
+          </div>
+          <div className={styles.rightHeader}>
+            <select className={styles.clubSelect} onChange={handleClubSelect} value={club.id}>
+              {clubsList.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
               ))}
-            </ul>
-          )}
-        </div>
-      )}
-
-      {activeTab === "createPlan" && (
-        <div>
-          <h2>Criar Novo Plano</h2>
-          <form onSubmit={handleCreatePlan}>
-            <div>
-              <label>Nome do Plano:</label>
-              <input
-                type="text"
-                value={planName}
-                onChange={(e) => setPlanName(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label>Descrição:</label>
-              <textarea
-                value={planDescription}
-                onChange={(e) => setPlanDescription(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label>Preço (R$):</label>
-              <input
-                type="number"
-                step="0.01"
-                value={planPrice}
-                onChange={(e) => setPlanPrice(Number(e.target.value))}
-                required
-              />
-            </div>
-            <div>
-              <label>Benefícios:</label>
-              <div>
-                <input
-                  type="text"
-                  value={benefitText}
-                  onChange={(e) => setBenefitText(e.target.value)}
-                />
-                <button type="button" onClick={handleAddBenefit}>
-                  Adicionar
-                </button>
+            </select>
+            <button className={styles.optionsButton} onClick={() => setShowOptionsDropdown(!showOptionsDropdown)}>
+              &#8942;
+            </button>
+            {showOptionsDropdown && (
+              <div ref={dropdownRef} className={styles.dropdown}>
+                <ul className={styles.dropdownList}>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setShowOptionsDropdown(false);
+                        setShowConfirmDeleteModal(true);
+                      }}
+                    >
+                      Excluir Clube
+                    </button>
+                  </li>
+                  <li>
+                    <Link href="/clubs/create">
+                      <button onClick={() => setShowOptionsDropdown(false)}>Criar Clube</button>
+                    </Link>
+                  </li>
+                </ul>
               </div>
-              {planBenefits.map((b, idx) => (
-                <div key={idx}>
-                  <span>{b.benefit}</span>
-                  <button type="button" onClick={() => handleRemoveBenefit(idx)}>
-                    Remover
-                  </button>
-                </div>
-              ))}
-            </div>
-            <button type="submit">Criar Plano</button>
-          </form>
-          <button onClick={() => setActiveTab("plans")}>Voltar aos Planos</button>
-        </div>
-      )}
+            )}
+          </div>
+        </header>
 
-      {activeTab === "subscribe" && (
-        <div>
-          <h2>Assinar o Clube</h2>
-          {subscribeMessage && <p>{subscribeMessage}</p>}
-          {plansLoading ? (
-            <p>Carregando planos...</p>
-          ) : plans.length === 0 ? (
-            <p>Não há planos disponíveis para este clube.</p>
-          ) : (
-            <ul>
-              {plans.map((plan) => (
-                <li key={plan.id} style={{ marginBottom: "1rem" }}>
-                  <strong>{plan.name}</strong> - R$ {plan.price.toFixed(2)}
-                  <p>{plan.description}</p>
-                  <button onClick={() => handleSubscribe(plan.id)}>
-                    Assinar este plano
+        {/* Layout com Menu Lateral e Conteúdo Centralizado */}
+        <div className={styles.contentContainer}>
+          <aside className={styles.sidebar}>
+            <nav className={styles.sideNav}>
+              <ul>
+                <li>
+                  <button onClick={() => setActiveTab("details")} className={activeTab === "details" ? styles.active : ""}>
+                    Detalhes
                   </button>
                 </li>
-              ))}
-            </ul>
+                <li>
+                  <button onClick={() => setActiveTab("plans")} className={activeTab === "plans" ? styles.active : ""}>
+                    Assinaturas
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => setActiveTab("createPlan")} className={activeTab === "createPlan" ? styles.active : ""}>
+                    Criar Plano
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => setActiveTab("editClub")} className={activeTab === "editClub" ? styles.active : ""}>
+                    Editar Clube
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => setActiveTab("estilo")} className={activeTab === "estilo" ? styles.active : ""}>
+                    Estilo
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => setActiveTab("blog")} className={activeTab === "blog" ? styles.active : ""}>
+                    Blog
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => setActiveTab("grupoConversas")} className={activeTab === "grupoConversas" ? styles.active : ""}>
+                    Grupo de Conversa
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => setActiveTab("engajamentos")} className={activeTab === "engajamentos" ? styles.active : ""}>
+                    Engajamentos
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </aside>
+
+          <main className={styles.mainContent}>
+            {activeTab === "details" && (
+              <section className={styles.tabSection}>
+                <h2>Detalhes do Clube</h2>
+                <p>Aqui estão as informações gerais do clube.</p>
+              </section>
+            )}
+
+            {activeTab === "plans" && (
+              <section className={styles.tabSection}>
+                <h2>Planos de Assinatura</h2>
+                {plansLoading ? (
+                  <p>Carregando planos...</p>
+                ) : plans.length === 0 ? (
+                  <p>Nenhum plano encontrado.</p>
+                ) : (
+                  <ul className={styles.plansList}>
+                    {plans.map((plan) => (
+                      <li key={plan.id} className={styles.planItem}>
+                        <strong>{plan.name}</strong> - R$ {plan.price.toFixed(2)}
+                        <p>{plan.description}</p>
+                        {plan.benefits?.length && (
+                          <ul className={styles.benefitsList}>
+                            {plan.benefits.map((b, idx) => (
+                              <li key={idx}>{b.benefit}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            )}
+
+            {activeTab === "createPlan" && (
+              <section className={styles.tabSection}>
+                <h2>Criar Novo Plano</h2>
+                <form id="createPlanForm" onSubmit={handleCreatePlan} className={styles.planForm}>
+                  <div className={styles.formGroup}>
+                    <label>Nome do Plano:</label>
+                    <input
+                      type="text"
+                      value={planName}
+                      onChange={(e) => setPlanName(e.target.value)}
+                      required
+                      className={styles.inputField}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label>Descrição:</label>
+                    <textarea
+                      value={planDescription}
+                      onChange={(e) => setPlanDescription(e.target.value)}
+                      required
+                      className={styles.textareaField}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label>Preço (R$):</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={planPrice}
+                      onChange={(e) => setPlanPrice(Number(e.target.value))}
+                      required
+                      className={styles.inputField}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label>Benefícios:</label>
+                    <div className={styles.benefitInputGroup}>
+                      <input
+                        type="text"
+                        value={benefitText}
+                        onChange={(e) => setBenefitText(e.target.value)}
+                        className={styles.inputField}
+                      />
+                      <button type="button" onClick={handleAddBenefit} className={styles.addButton}>
+                        Adicionar
+                      </button>
+                    </div>
+                    {planBenefits.map((b, idx) => (
+                      <div key={idx} className={styles.benefitItem}>
+                        <span>{b.benefit}</span>
+                        <button type="button" onClick={() => handleRemoveBenefit(idx)} className={styles.removeButton}>
+                          Remover
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </form>
+              </section>
+            )}
+
+            {activeTab === "editClub" && (
+              <section className={styles.tabSection}>
+                <h2>Editar Clube</h2>
+                <form id="editClubForm" onSubmit={handleUpdateClub} className={styles.editForm}>
+                  <div className={styles.formGroup}>
+                    <label>Nome:</label>
+                    <input
+                      type="text"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      required
+                      className={styles.inputField}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label>Categoria:</label>
+                    <select
+                      value={editCategoryId}
+                      onChange={(e) => setEditCategoryId(Number(e.target.value))}
+                      required
+                      className={styles.inputField}
+                    >
+                      {editCategories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className={styles.fileUploadSection}>
+                    <label>Logo:</label>
+                    <div
+                      className={styles.fileUploadContainer}
+                      onDragOver={handleEditDragOver}
+                      onDrop={handleEditDrop}
+                    >
+                      <div className={styles.dragArea}>Arraste o arquivo para cá</div>
+                      <div className={styles.orText}>ou</div>
+                      <button
+                        type="button"
+                        className={styles.selectFileButton}
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        Selecionar um arquivo
+                      </button>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
+                        onChange={handleEditFileSelect}
+                      />
+                    </div>
+                    <p className={styles.fileUploadHint}>
+                      A imagem deve estar em JPG ou PNG, até 5 MB. Dimensões ideais: 600x600 pixels.
+                    </p>
+                  </div>
+                </form>
+              </section>
+            )}
+
+            {activeTab === "estilo" && (
+              <section className={styles.tabSection}>
+                <h2>Estilo</h2>
+              </section>
+            )}
+
+            {activeTab === "blog" && (
+              <section className={styles.tabSection}>
+                <h2>Blog</h2>
+              </section>
+            )}
+
+            {activeTab === "grupoConversas" && (
+              <section className={styles.tabSection}>
+                <h2>Grupo de Conversa</h2>
+              </section>
+            )}
+
+            {activeTab === "engajamentos" && (
+              <section className={styles.tabSection}>
+                <h2>Engajamentos</h2>
+              </section>
+            )}
+          </main>
+        </div>
+      </div>
+
+      {/* Fixed Footer para as seções "Criar Plano" e "Editar Clube" */}
+      {(activeTab === "createPlan" || activeTab === "editClub") && (
+        <div className={styles.fixedFooter}>
+          {activeTab === "createPlan" && (
+            <button type="submit" form="createPlanForm" className={styles.fixedButton}>
+              Criar Plano
+            </button>
+          )}
+          {activeTab === "editClub" && (
+            <button type="submit" form="editClubForm" className={styles.fixedButton}>
+              Atualizar Clube
+            </button>
           )}
         </div>
       )}
 
-      <div style={{ marginTop: "2rem" }}>
-        <button onClick={() => router.push("/clubs")}>Voltar para Lista de Clubes</button>
-      </div>
-    </div>
+      {/* Modal de Confirmação para Exclusão */}
+      {showConfirmDeleteModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowConfirmDeleteModal(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <h3>Confirmar Exclusão</h3>
+            <p>Tem certeza que deseja excluir este clube?</p>
+            <div className={styles.modalActions}>
+              <button onClick={() => setShowConfirmDeleteModal(false)}>Cancelar</button>
+              <button
+                onClick={() => {
+                  setShowConfirmDeleteModal(false);
+                  handleDeleteClub();
+                }}
+              >
+                Sim, excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

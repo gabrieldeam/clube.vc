@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginUser, checkEmailExists } from "@/services/auth";
-import { useUserFlow } from "@/context/UserFlowContext";
 import Input from "@/components/Input/Input";
 import Button from "@/components/Button/Button";
+import styles from "./loginForm.module.css";
 
+// Variável para armazenar o timer enquanto o usuário digita
 let typingTimer: NodeJS.Timeout;
 
 export default function LoginForm() {
@@ -17,18 +18,18 @@ export default function LoginForm() {
   const [isEmailValid, setIsEmailValid] = useState(false);
 
   const router = useRouter();
-  const { flow } = useUserFlow();
-
   const emailInputRef = useRef<HTMLInputElement | null>(null);
   const passwordInputRef = useRef<HTMLInputElement | null>(null);
   const submitButtonRef = useRef<HTMLButtonElement | null>(null);
 
+  // Foca automaticamente no input de email ao carregar o componente
   useEffect(() => {
     if (emailInputRef.current) {
       emailInputRef.current.focus();
     }
   }, []);
 
+  // Gerencia a alteração do email e inicia a validação após 500ms de inatividade
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEmail(value);
@@ -39,6 +40,7 @@ export default function LoginForm() {
     }, 500);
   };
 
+  // Valida o formato do email e, se estiver correto, verifica se ele existe no sistema
   const validateEmail = async (value: string) => {
     // Verifica se o email contém "@" e se há um "." após o "@"
     const atIndex = value.indexOf("@");
@@ -65,21 +67,19 @@ export default function LoginForm() {
     }
   };
 
+  // Gerencia o envio do formulário para realizar o login
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await loginUser({ email, password });
       setSuccessMessage("Login realizado com sucesso! Redirecionando...");
       setErrorMessage(null);
+  
+      // Aguarda 3 segundos para garantir que o token seja armazenado no cookie
       setTimeout(() => {
-        if (flow === "clubs") {
-          router.push("/clubs");
-        } else if (flow === "profile") {
-          router.push("/profile");
-        } else {
-          router.push("/");
-        }
-      }, 2000);
+        // Força um reload completo da página
+        window.location.reload();
+      }, 3000);
     } catch (error: any) {
       console.error("Erro no login:", error);
       setErrorMessage(
@@ -89,6 +89,7 @@ export default function LoginForm() {
     }
   };
 
+  // Ao pressionar "Enter" no campo de email, foca no campo de senha
   const handleEmailKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && passwordInputRef.current) {
       e.preventDefault();
@@ -96,6 +97,7 @@ export default function LoginForm() {
     }
   };
 
+  // Ao pressionar "Enter" no campo de senha, dispara o clique do botão de envio
   const handlePasswordKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && submitButtonRef.current) {
       e.preventDefault();
@@ -103,10 +105,12 @@ export default function LoginForm() {
     }
   };
 
+  // Redireciona para a página de registro, passando o email como query string
   const redirectToRegister = () => {
     router.push(`/auth/register?email=${encodeURIComponent(email)}`);
   };
 
+  // Redireciona para a página de recuperação de senha
   const redirectToForgotPassword = () => {
     router.push(`/auth/forgot-password`);
   };
@@ -114,46 +118,65 @@ export default function LoginForm() {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <Input
-          ref={emailInputRef}
-          type="email"
-          value={email}
-          onChange={handleEmailChange}
-          onKeyDown={handleEmailKeyDown}
-          placeholder="Email"
-          required
-        />
-        {errorMessage && (
-          <div>
-            <p style={{ color: "red" }}>{errorMessage}</p>
-            {errorMessage === "Esse email não está cadastrado." && (
-              <Button
-                type="button"
-                text="Registrar-se com esse email"
-                onClick={redirectToRegister}
-              />
-            )}
+        <div className={styles.container}>
+          <Input
+            ref={emailInputRef}
+            type="email"
+            value={email}
+            onChange={handleEmailChange}
+            onKeyDown={handleEmailKeyDown}
+            placeholder="Email"
+            required
+          />
+          {errorMessage && (
+            <div>
+              <p style={{ color: "red" }}>{errorMessage}</p>
+              {errorMessage === "Esse email não está cadastrado." && (
+                <Button
+                  type="button"
+                  text="Registrar-se com esse email"
+                  onClick={redirectToRegister}
+                />
+              )}
+            </div>
+          )}
+          {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+          
+          <div className={styles.password}>
+            <Input
+              ref={passwordInputRef}
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handlePasswordKeyDown}
+              placeholder="Senha"
+              required
+            />
+            <button
+              className={styles.button}
+              type="button"
+              onClick={redirectToForgotPassword}
+            >
+              ESQUECEU A SENHA?
+            </button>
           </div>
-        )}
-        {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-        <Input
-          ref={passwordInputRef}
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onKeyDown={handlePasswordKeyDown}
-          placeholder="Senha"
-          required
-        />
-        <Button
-          ref={submitButtonRef}
-          text="Login"
-          type="submit"
-        />
-      </form>
-      <button type="button" onClick={redirectToForgotPassword}>
-        Redefinir senha
-      </button>
+          
+          <p>
+            Ao fazer login e usar o Clube, você concorda com nossos Termos de Serviço e Política de Privacidade
+          </p>
+          <button
+            className={styles.button}
+            type="button"
+            onClick={redirectToRegister}
+          >
+            INSCREVA-SE NA CLUBE
+          </button>
+
+          <div className={styles.login}>
+            <Button ref={submitButtonRef} text="ENTRAR" type="submit" />
+          </div>
+        </div>
+      </form>      
     </div>
   );
 }

@@ -1,0 +1,195 @@
+/* Container geral */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  /* Cabeçalho */
+  .header {
+    margin-bottom: 40px;
+  }
+  
+  .title {
+    font-size: 34px;
+    margin-bottom: 10px;
+    color: #272727;
+  }
+  
+  .subtitle {
+    font-size: 16px;
+    color: #555;
+  }
+  
+  /* Grupo de Input para Nome */
+  .inputGroup {
+    margin-bottom: 20px;
+  }
+  
+  .label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  
+  .inputLarge {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .inputHint {
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 5px;
+  }
+  
+  /* Seção de Categorias */
+  .categoriesSection {
+    margin-bottom: 20px;
+  }
+  
+  .categoriesTitle {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #272727;
+  }
+  
+  .categoriesSubtitle {
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 15px;
+  }
+  
+  .categoriesList {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .categoryItem {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+  
+  .categoryItem.selected {
+    background-color: #066E17;
+    color: white;
+    border-color: #5cb36a;
+  }
+  
+  /* Seção de Upload de Logo */
+  .fileUploadSection {
+    margin-bottom: 20px;
+  }
+  
+  .fileUploadContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 2px dashed #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    height: 200px;
+  }
+  
+  .dragArea {
+    flex: 1;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  .orText {
+    margin: 0 10px;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  .selectFileButton {
+    padding: 10px 20px;
+    border: 1px solid #066E17;
+    color: #066E17;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: transparent;
+  }
+  
+  .fileUploadHint {
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  /* Footer fixo */
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .cancelButton {
+    padding: 10px 20px;
+    background-color: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .cancelButton:hover {
+    text-decoration: underline;
+  }
+  
+  .saveButton {
+    padding: 10px 20px;
+    background-color: #066E17;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .container {
+      padding: 20px;
+      margin-top: 0;
+    }
+    
+    .inputLarge {
+      padding: 10px;
+      font-size: 0.9rem;
+    }    
+    
+    .fileUploadContainer {
+      flex-direction: column;
+      height: auto;
+      text-align: center;
+      gap: 10px;
+      padding: 20px;
+    }
+
+    .fileUploadHint {
+      margin-bottom: 80px;
+    }
+    
+    .orText {
+      margin: 10px 0;
+    }
+  
+  }

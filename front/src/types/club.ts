@@ -9,6 +9,7 @@ export interface ClubCreate {
     logo?: string;
     category_id: number;
     owner_id: string;
+    banner?: string;
   }
   
   export interface ClubUpdate {

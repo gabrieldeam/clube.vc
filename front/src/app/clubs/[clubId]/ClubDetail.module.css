@@ -1,0 +1,404 @@
+/* Layout Geral */
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 75px); /* considerando TopMenu */
+  }
+  
+  /* Cabeçalho Grande */
+  .headerInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #fdfdfd;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .leftHeader {
+    display: flex;
+    align-items: center;
+  }
+  
+  .clubLogo {
+    width: 120px;
+    height: auto;
+    margin-right: 20px;
+  }
+  
+  .clubData {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .clubName {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 0;
+    color: #272727;
+  }
+  
+  .clubCategory,
+  .clubId {
+    font-size: 18px;
+    color: #555;
+    margin: 2px 0;
+  }
+  
+  .rightHeader {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+  }
+  
+  .clubSelect {
+    padding: 5px;
+    font-size: 16px;
+  }
+  
+  .optionsButton {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  /* Dropdown de Opções */
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    white-space: nowrap;
+  }
+  
+  .dropdownList {
+    list-style: none;
+    margin: 0;
+    padding: 10px;
+  }
+  
+  .dropdownList li {
+    margin-bottom: 10px;
+  }
+  
+  .dropdownList li:last-child {
+    margin-bottom: 0;
+  }
+  
+  .dropdownList button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #066E17;
+    padding: 5px 10px;
+    width: 100%;
+    text-align: left;
+  }
+  
+  .dropdownList button:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Layout com Menu Lateral e Conteúdo Centralizado */
+  .contentContainer {
+    display: flex;
+    flex: 1;
+  }
+  
+  .sidebar {
+    width: 220px;
+    background-color: #f5f5f5;
+    border-right: 1px solid #ddd;
+  }
+  
+  .sideNav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  
+  .sideNav button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    padding: 20px 40px;
+    border-bottom: 1px solid #ddd;  
+    white-space: nowrap;
+  }
+  
+  .sideNav button:hover {
+    background-color: #eaeaea;
+    padding: 20px;
+  }
+  
+  .sideNav button.active {
+    font-weight: bold;
+    color: #066E17;
+    background-color: #e0f2e9;
+    padding: 20px 40px;  
+    border-left: 5px solid #066E17;
+  }
+  
+  /* Conteúdo Principal Centralizado */
+  .mainContent {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .tabSection {
+    text-align: center;
+    width: 100%;
+  }
+  
+  /* Listagem de Planos */
+  .plansList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .planItem {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .benefitsList {
+    list-style: disc;
+    margin-left: 20px;
+  }
+  
+  /* Formulários (Criar Plano e Editar Clube) */
+  .planForm,
+  .editForm {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .formGroup {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .inputField {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .textareaField {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-height: 80px;
+  }
+  
+  /* Grupo de Benefícios */
+  .benefitInputGroup {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .addButton {
+    padding: 8px 12px;
+    background-color: #066E17;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .benefitItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+  }
+  
+  .removeButton {
+    padding: 4px 8px;
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .savePlanButton,
+  .saveButton {
+    padding: 10px 20px;
+    background-color: #066E17;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* Seção de Upload de Logo */
+  .fileUploadSection {
+    margin-bottom: 20px;
+  }
+  
+  .fileUploadContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 2px dashed #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    height: 200px;
+  }
+  
+  .dragArea {
+    flex: 1;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  .orText {
+    margin: 0 10px;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  .selectFileButton {
+    padding: 10px 20px;
+    border: 1px solid #066E17;
+    color: #066E17;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: transparent;
+  }
+  
+  .fileUploadHint {
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  /* Fixed Footer para criar/editar */
+  .fixedFooter {
+    position: fixed;
+    bottom: 0;
+    left: 220px;
+    width: calc(100% - 220px);
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    z-index: 100;
+  }
+  
+  
+  .fixedButton {
+    padding: 10px 20px;
+    background-color: #066E17;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* Modal de Confirmação para Exclusão */
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+  }
+  
+  .modalActions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+  /* Responsividade */
+  @media screen and (max-width: 768px) {
+    .headerInfo {
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+    }
+    .leftHeader {
+      margin-bottom: 10px;
+    }
+    .clubLogo {
+      margin-right: 0;
+      margin-bottom: 10px;
+      width: 100px;
+    }
+    .clubName {
+      font-size: 28px;
+    }
+    .contentContainer {
+      flex-direction: column;
+    }
+
+    .sideNav ul {
+        display: flex;
+        overflow: auto;
+        white-space: nowrap;
+      }
+      
+      .sideNav li {
+        margin-bottom: 0px;
+      }
+
+      .fixedFooter {
+        left: 0;
+        width: 100%;
+      }
+
+    .sidebar {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid #ddd;
+    }
+    .mainContent {
+      padding: 20px;
+    }
+  }
+  
