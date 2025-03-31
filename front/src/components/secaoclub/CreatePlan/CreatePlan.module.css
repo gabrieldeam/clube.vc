@@ -1,0 +1,294 @@
+/* Container Geral para o formulário de criação */
+.createPlanContainer {
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+/* Container para a listagem/gerenciamento */
+.managementContainer {
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+/* Título */
+.title {
+  font-size: 25px;
+  margin-bottom: 30px;
+  color: #272727;
+  font-weight: 400;
+}
+
+/* Formulário */
+.createPlanForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Container Flex para as duas colunas do formulário */
+.contentFlex {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+/* Coluna Esquerda */
+.leftColumn {
+  flex: 1;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Coluna Direita */
+.rightColumn {
+  flex: 1;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.inputLarge {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 5px;
+}
+
+.textareaLarge {
+  height: 180px;
+}
+
+.counter {
+  font-size: 0.9rem;
+  color: #888;
+  text-align: right;
+  margin-bottom: 5px;
+}
+
+.inputHint {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 15px;
+}
+
+/* Seção de Benefícios */
+.benefitsSection {
+  margin-bottom: 20px;
+}
+
+.categoriesTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #272727;
+}
+
+.categoriesSubtitle {
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+/* Campo de texto + botão Adicionar */
+.benefitsInput {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+/* Lista de “chips” (benefícios) */
+.categoriesList {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.categoryItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  cursor: default;
+  transition: background-color 0.3s, border-color 0.3s;
+  font-size: 15px;
+}
+
+/* Botões (Adicionar e Remover) */
+.selectFileButton {
+  padding: 10px 20px;
+  border: 1px solid #066E17;
+  color: #066E17;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.removeButton {
+  color: red;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: transparent;
+  font-size: 12px;
+}
+
+.selectFileButton:hover,
+.removeButton:hover {
+  background-color: #066E17;
+  color: white;
+}
+
+/* Botões do formulário (Criar, Atualizar, Deletar e Cancelar) */
+.formButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.saveButton {
+  padding: 10px 20px;
+  background-color: #066E17;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.saveButton:hover {
+  opacity: 0.9;
+}
+
+.cancelButton {
+  padding: 10px 20px;
+  background-color: transparent;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  opacity: 0.9;
+}
+
+.deleteButton {
+  padding: 10px 20px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  opacity: 0.9;
+}
+
+/* Listagem dos Planos */
+.planList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.planCard {
+  background-color: #fff;
+  border: 1px solid #ebebeb;
+  border-radius: 8px;
+  padding: 20px;
+  flex: 1 1 300px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  max-width: 350px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.planCard:hover {
+  transform: scale(1.02);
+}
+
+.planName {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.planDescription {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.planPrice {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.benefitsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.benefitItem {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+/* Card para Criar Novo Plano */
+.createCard {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+  max-width: 350px;
+}
+
+.createCard:hover {
+  background-color: #d8d8d8;
+}
+
+.plusIcon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+
+@media screen and (max-width: 768px) {
+  .createPlanContainer {
+    padding: 0px;
+  }
+  
+}

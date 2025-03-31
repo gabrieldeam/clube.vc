@@ -1,4 +1,5 @@
 export interface SubscriptionPlanBenefit {
+    id?: string;
     benefit: string;
   }
   

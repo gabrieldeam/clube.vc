@@ -1,0 +1,268 @@
+/* Container Geral para o formulário de criação/edição */
+.formContainer {
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+/* Container para a listagem/gerenciamento */
+.managementContainer {
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+/* Título */
+.title {
+  font-size: 25px;
+  margin-bottom: 30px;
+  color: #272727;
+  font-weight: 400;
+  text-align: center;
+}
+
+/* Formulário principal */
+.styleForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Container Flex para as duas colunas do formulário */
+.contentFlex {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+/* Coluna Esquerda */
+.leftColumn {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Coluna Direita */
+.rightColumn {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Agrupamento de cada campo/label */
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.label {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+/* Inputs de texto */
+.inputLarge {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Tamanhos de textareas */
+.textareaMedium {
+  height: 100px;
+}
+
+.textareaLarge {
+  height: 180px;
+}
+
+/* Inputs de arquivo */
+.inputFile {
+  padding: 6px 0;
+}
+
+/* Botão para adicionar info */
+.addInfoButton {
+  margin-top: 5px;
+  padding: 6px 12px;
+  background-color: #066E17;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.addInfoButton:hover {
+  opacity: 0.9;
+}
+
+/* Lista de infos adicionadas */
+.infoList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.infoItem {
+  background-color: #f9f9f9;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+/* Botões do formulário */
+.formButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.saveButton {
+  padding: 10px 20px;
+  background-color: #066E17;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.saveButton:hover {
+  opacity: 0.9;
+}
+
+.cancelButton {
+  padding: 10px 20px;
+  background-color: transparent;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  opacity: 0.9;
+}
+
+.deleteButton {
+  padding: 10px 20px;
+  background-color: #ff4d4d;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  opacity: 0.9;
+}
+
+/* Listagem do estilo (exibição) */
+.styleCard {
+  background-color: #fff;
+  border: 1px solid #ebebeb;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto 20px auto;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.styleTitle {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.styleShortDescription {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.styleFullDescription {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+/* Detalhes do estilo (cores, texto, vídeo) */
+.styleDetails p {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+/* Imagens (banners, promo) */
+.styleImageContainer {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.styleImage {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+/* Botões dentro do card de estilo */
+.buttonGroup {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Botão de Editar no card */
+.editButton {
+  padding: 10px 20px;
+  background-color: #066E17;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.editButton:hover {
+  opacity: 0.9;
+}
+
+/* Card para Criar Novo Estilo */
+.createCard {
+  background-color: #f9f9f9;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.createCard:hover {
+  background-color: #d8d8d8;
+}
+
+/* Responsividade básica para telas menores */
+@media screen and (max-width: 768px) {
+  .contentFlex {
+    flex-direction: column;
+  }
+  
+  .leftColumn,
+  .rightColumn {
+    min-width: 100%;
+  }
+
+  .styleCard,
+  .createCard {
+    max-width: 100%;
+  }
+}

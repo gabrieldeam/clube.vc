@@ -9,6 +9,7 @@ class SubscriptionPlanBase(BaseModel):
     price: float = Field(..., description="Preço do plano")
 
 class SubscriptionPlanCreate(SubscriptionPlanBase):
+    club_id: UUID  # Adicione essa linha
     benefits: Optional[List[SubscriptionBenefitCreate]] = None
 
 class SubscriptionPlanResponse(SubscriptionPlanBase):

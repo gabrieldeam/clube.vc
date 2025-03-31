@@ -31,6 +31,7 @@
   font-size: 15px;
   border: 1px solid #ddd;
   border-radius: 20px;
+  max-width: 100px;
 }
 
 /* Grid com 3 cards por linha e quebra para a próxima linha */

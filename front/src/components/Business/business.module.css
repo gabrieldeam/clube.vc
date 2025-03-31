@@ -5,8 +5,8 @@
 }
 
 .content {
-  padding: 40px 40px 30px 40px;
-  margin-top: -10px;
+  padding: 40px 40px 30px 40px;  
+  margin-top: 60px;
 }
 
 .content h1 {
@@ -271,7 +271,7 @@
 
     .content {
       padding: 20px;
-      margin-top: 0;
+      margin-top: 70px;
     }
     
     .faturamentoSection {

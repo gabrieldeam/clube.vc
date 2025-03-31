@@ -8,7 +8,7 @@ import {
 export const createSubscriptionPlan = async (
   plan: SubscriptionPlanCreate
 ): Promise<SubscriptionPlanResponse> => {
-  const response = await api.post("/subscription-plans", plan);
+  const response = await api.post("/subscription_plans", plan);
   return response.data;
 };
 
@@ -16,8 +16,33 @@ export const createSubscriptionPlan = async (
 export const listSubscriptionPlans = async (
   clubId: string
 ): Promise<SubscriptionPlanResponse[]> => {
-  const response = await api.get("/subscription-plans", {
+  const response = await api.get("/subscription_plans", {
     params: { club_id: clubId }
   });
+  return response.data;
+};
+
+// Obtém os detalhes de um plano específico pelo ID do plano
+export const getSubscriptionPlan = async (
+  planId: string
+): Promise<SubscriptionPlanResponse> => {
+  const response = await api.get(`/subscription_plans/${planId}`);
+  return response.data;
+};
+
+// Atualiza um plano específico pelo ID do plano
+export const updateSubscriptionPlan = async (
+  planId: string,
+  plan: SubscriptionPlanCreate
+): Promise<SubscriptionPlanResponse> => {
+  const response = await api.put(`/subscription_plans/${planId}`, plan);
+  return response.data;
+};
+
+// Deleta um plano específico pelo ID do plano
+export const deleteSubscriptionPlan = async (
+  planId: string
+): Promise<SubscriptionPlanResponse> => {
+  const response = await api.delete(`/subscription_plans/${planId}`);
   return response.data;
 };
