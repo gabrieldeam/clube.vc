@@ -207,7 +207,7 @@ export default function ClubDetailPage() {
                 </li>
                 <li>
                   <button onClick={() => setActiveTab("estilo")} className={activeTab === "estilo" ? styles.active : ""}>
-                    Estilo
+                    Aparecia do clube
                   </button>
                 </li>
                 <li>
@@ -233,7 +233,7 @@ export default function ClubDetailPage() {
             {activeTab === "plans" && <PlansSection />}
             {activeTab === "createPlan" && <CreatePlanSection clubId={clubId} />}
             {activeTab === "editClub" && <EditClubSection clubId={clubId} />}
-            {activeTab === "estilo" && <EstiloSection />}
+            {activeTab === "estilo" && <EstiloSection clubId={clubId} />}
             {activeTab === "blog" && <BlogSection />}
             {activeTab === "grupoConversas" && <GrupoConversasSection />}
             {activeTab === "engajamentos" && <EngajamentosSection />}
