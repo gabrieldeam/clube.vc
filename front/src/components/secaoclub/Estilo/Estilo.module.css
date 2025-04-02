@@ -72,7 +72,14 @@
   margin-bottom: 5px;
 }
 
-/* Inputs de texto e textareas */
+.inputColor {
+  padding: 0px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 100%;
+  background-color: transparent;
+}
+
 .inputLarge {
   width: 100%;
   padding: 12px;
@@ -168,12 +175,11 @@
   color: #333;
 }
 
-/* Linha do input de FAQ com campos para pergunta e resposta */
 .faqInputRow {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
   align-items: center;
+  width: 100%;
 }
 
 .addFaqButton {
@@ -183,6 +189,7 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .addFaqButton:hover {
@@ -192,7 +199,6 @@
 /* Lista de FAQs */
 .faqList {
   display: flex;
-  flex-direction: column;
   gap: 10px;
   margin-top: 10px;
 }

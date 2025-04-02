@@ -1,5 +1,250 @@
+/* Container principal do Blog */
 .blogContainer {
-    width: 100%;
-    text-align: center;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Título geral */
+.title {
+  font-size: 25px;
+  margin-bottom: 30px;
+  color: #272727;
+  font-weight: 400;
+}
+
+/* Container de gerenciamento */
+.managementContainer {
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Lista de posts */
+.blogList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Card de cada post */
+.blogCard {
+  background-color: #fff;
+  border: 1px solid #ebebeb;
+  border-radius: 8px;
+  padding: 20px;
+  flex: 1 1 300px;
+  max-width: 350px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s;
+  width: 100%;
+}
+
+.blogCard:hover {
+  transform: scale(1.02);
+}
+
+.blogTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.blogSubtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.blogContentPreview {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+/* Imagem do post na listagem */
+.blogImage {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* Card para criar novo post */
+.createCard {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  flex: 1 1 300px;
+  max-width: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+  width: 100%;
+}
+
+.createCard:hover {
+  background-color: #d8d8d8;
+}
+
+/* Formulário de criação/edição */
+.blogFormContainer {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.formTitle {
+  font-size: 25px;
+  margin-bottom: 20px;
+  color: #272727;
+  font-weight: 400;
+}
+
+.blogForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.inputLarge {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 5px;
+}
+
+.textareaLarge {
+  height: 160px;
+  resize: vertical;
+}
+
+/* Botões do formulário */
+.formButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.saveButton {
+  padding: 10px 20px;
+  background-color: #066e17;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.saveButton:hover {
+  opacity: 0.9;
+}
+
+.cancelButton {
+  padding: 10px 20px;
+  background-color: transparent;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  opacity: 0.9;
+}
+
+.deleteButton {
+  padding: 10px 20px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  opacity: 0.9;
+}
+
+/* Área de upload de imagem */
+.fileUploadSection {
+  width: 100%;
+}
+
+.fileUploadContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 2px dashed #ccc;
+  padding: 20px 60px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  height: 200px;
+  text-align: center;
+}
+
+.fileUploadContainer div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dragArea {
+  flex: 1;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.orText {
+  margin: 0 10px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.selectFileButton {
+  padding: 10px 20px;
+  border: 1px solid #066e17;
+  color: #066e17;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.fileUploadHint {
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Exibe a imagem atual no formulário */
+.currentLogo {
+  max-width: 150px;
+  max-height: 150px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+@media screen and (max-width: 768px) {
+  .blogContainer,
+  .managementContainer {
+    padding: 0px;
   }
-  
+}

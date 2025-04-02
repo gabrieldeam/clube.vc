@@ -106,8 +106,8 @@ async def create_club_style(
     return club_style
 
 @router.get("/{club_id}", response_model=ClubStyleResponse)
-def get_club_style(club_id: UUID, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    club_style = db.query(ClubStyle).join(Club).filter(Club.id == club_id, Club.owner_id == current_user.id).first()
+def get_club_style(club_id: UUID, db: Session = Depends(get_db)):
+    club_style = db.query(ClubStyle).join(Club).filter(Club.id == club_id).first()
     if not club_style:
         raise HTTPException(status_code=404, detail="Estilo do clube não encontrado")
     return club_style

@@ -18,6 +18,7 @@ class ClubUpdate(BaseModel):
 class ClubResponse(ClubBase):
     id: UUID
     owner_id: UUID
+    support_id: str  # Novo campo para visualização
 
     class Config:
         orm_mode = True

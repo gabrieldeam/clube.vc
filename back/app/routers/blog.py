@@ -2,89 +2,134 @@ import os
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from datetime import datetime
 from app.database import get_db
-from app.models.blog_post import BlogPost
-from app.schemas.blog_post import BlogPostCreate, BlogPostResponse
-from app.dependencies import get_current_user
+from app.models.blog_post import BlogPost  # Certifique-se de que o caminho esteja correto
+from app.schemas.blog_post import BlogPostResponse  # Certifique-se de que o schema esteja correto
 
-router = APIRouter(
-    tags=["Blog"]
-)
+router = APIRouter()
 
-def remove_file(file_url: Optional[str]):
-    if file_url:
-        file_path = file_url.lstrip("/")
-        if os.path.exists(file_path):
-            os.remove(file_path)
-
+# Função auxiliar para salvar o arquivo, igual à usada em outros endpoints
 async def save_uploaded_file(upload: UploadFile, upload_dir: str) -> str:
     os.makedirs(upload_dir, exist_ok=True)
     file_name = f"{uuid.uuid4().hex}_{upload.filename}"
     file_path = os.path.join(upload_dir, file_name)
     with open(file_path, "wb") as f:
         f.write(await upload.read())
+    # Retorna a URL relativa (por exemplo, /static/blog_images/...)
     return f"/{upload_dir}/{file_name}"
 
-@router.post("/upload", response_model=BlogPostResponse)
+# Função auxiliar para remover arquivo, se existir
+def remove_file(file_url: str):
+    if file_url:
+        file_path = file_url.lstrip("/")
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+# Endpoint para criar um post para um clube específico (com upload de imagem)
+@router.post("/clubs/{club_id}/blog/upload", response_model=BlogPostResponse, status_code=status.HTTP_201_CREATED)
+async def create_club_blog_post(
+    club_id: str,
+    title: str = Form(...),
+    content: str = Form(...),
+    subtitle: str = Form(None),
+    image: UploadFile = File(None),
+    db: Session = Depends(get_db)
+):
+    upload_dir = "static/blog_images"
+    image_url = await save_uploaded_file(image, upload_dir) if image else None
+
+    novo_post = BlogPost(
+        club_id=uuid.UUID(club_id),
+        title=title,
+        content=content,
+        subtitle=subtitle,
+        image=image_url,
+        created_at=datetime.utcnow()
+    )
+    db.add(novo_post)
+    db.commit()
+    db.refresh(novo_post)
+    return novo_post
+
+# Endpoint para listar posts de um clube específico
+@router.get("/clubs/{club_id}/blog", response_model=list[BlogPostResponse])
+async def list_club_blog_posts(club_id: str, db: Session = Depends(get_db)):
+    posts = db.query(BlogPost).filter(BlogPost.club_id == uuid.UUID(club_id)).all()
+    return posts
+
+# Endpoint para criar um post fora do contexto do clube
+@router.post("/upload", response_model=BlogPostResponse, status_code=status.HTTP_201_CREATED)
 async def create_blog_post(
     club_id: str = Form(...),
     title: str = Form(...),
-    subtitle: Optional[str] = Form(None),
     content: str = Form(...),
+    subtitle: str = Form(None),
     image: UploadFile = File(None),
-    db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
-    upload_dir = "static/blog"
+    upload_dir = "static/blog_images"
     image_url = await save_uploaded_file(image, upload_dir) if image else None
-    blog_post = BlogPost(
-        club_id=club_id,
-        title=title,
-        subtitle=subtitle,
-        content=content,
-        image=image_url
-    )
-    db.add(blog_post)
-    db.commit()
-    db.refresh(blog_post)
-    return blog_post
 
-@router.get("/", response_model=List[BlogPostResponse])
-def list_blog_posts(club_id: str, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    posts = db.query(BlogPost).filter(BlogPost.club_id == club_id).all()
+    novo_post = BlogPost(
+        club_id=uuid.UUID(club_id),
+        title=title,
+        content=content,
+        subtitle=subtitle,
+        image=image_url,
+        created_at=datetime.utcnow()
+    )
+    db.add(novo_post)
+    db.commit()
+    db.refresh(novo_post)
+    return novo_post
+
+# Endpoint para listar posts fora do contexto do clube
+@router.get("/list", response_model=list[BlogPostResponse])
+async def list_blog_posts(club_id: str, db: Session = Depends(get_db)):
+    posts = db.query(BlogPost).filter(BlogPost.club_id == uuid.UUID(club_id)).all()
     return posts
 
+@router.get("/clubs/{club_id}/blog", response_model=list[BlogPostResponse])
+async def list_club_blog_posts(club_id: str, db: Session = Depends(get_db)):
+    posts = db.query(BlogPost).filter(BlogPost.club_id == uuid.UUID(club_id)).all()
+    return posts
+
+# Endpoint para atualizar um post (com upload de imagem)
 @router.put("/upload/{post_id}", response_model=BlogPostResponse)
 async def update_blog_post(
     post_id: str,
     title: str = Form(...),
-    subtitle: Optional[str] = Form(None),
     content: str = Form(...),
+    subtitle: str = Form(None),
     image: UploadFile = File(None),
-    db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
-    blog_post = db.query(BlogPost).filter(BlogPost.id == post_id).first()
-    if not blog_post:
+    post = db.query(BlogPost).filter(BlogPost.id == uuid.UUID(post_id)).first()
+    if not post:
         raise HTTPException(status_code=404, detail="Post não encontrado")
-    blog_post.title = title
-    blog_post.subtitle = subtitle
-    blog_post.content = content
-    upload_dir = "static/blog"
+    
+    post.title = title
+    post.content = content
+    post.subtitle = subtitle
     if image:
-        remove_file(blog_post.image)
-        blog_post.image = await save_uploaded_file(image, upload_dir)
+        if post.image:
+            remove_file(post.image)
+        upload_dir = "static/blog_images"
+        post.image = await save_uploaded_file(image, upload_dir)
     db.commit()
-    db.refresh(blog_post)
-    return blog_post
+    db.refresh(post)
+    return post
 
+# Endpoint para deletar um post
 @router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_blog_post(post_id: str, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    blog_post = db.query(BlogPost).filter(BlogPost.id == post_id).first()
-    if not blog_post:
+async def delete_blog_post(post_id: str, db: Session = Depends(get_db)):
+    post = db.query(BlogPost).filter(BlogPost.id == uuid.UUID(post_id)).first()
+    if not post:
         raise HTTPException(status_code=404, detail="Post não encontrado")
-    remove_file(blog_post.image)
-    db.delete(blog_post)
+    
+    if post.image:
+        remove_file(post.image)
+    db.delete(post)
     db.commit()
     return

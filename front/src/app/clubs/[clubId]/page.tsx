@@ -135,7 +135,7 @@ export default function ClubDetailPage() {
                 <p className={styles.clubCategory}>
                   {clubCategory ? clubCategory.name : `ID ${club.category_id}`}
                 </p>
-                <p className={styles.clubId}>ID: {club.id}</p>
+                <p className={styles.clubId}>ID: {club.support_id}</p>
               </div>
             </div>
           </div>
@@ -234,7 +234,7 @@ export default function ClubDetailPage() {
             {activeTab === "createPlan" && <CreatePlanSection clubId={clubId} />}
             {activeTab === "editClub" && <EditClubSection clubId={clubId} />}
             {activeTab === "estilo" && <EstiloSection clubId={clubId} />}
-            {activeTab === "blog" && <BlogSection />}
+            {activeTab === "blog" && <BlogSection clubId={clubId} />}
             {activeTab === "grupoConversas" && <GrupoConversasSection />}
             {activeTab === "engajamentos" && <EngajamentosSection />}
           </main>

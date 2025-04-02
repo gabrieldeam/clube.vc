@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { registerUser, checkEmailExists } from "../../../services/auth";
+import Input from "@/components/Input/Input";
+import Button from "@/components/Button/Button";
+import styles from "./registerPage.module.css";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -14,6 +17,7 @@ export default function RegisterPage() {
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -50,6 +54,10 @@ export default function RegisterPage() {
     }));
   };
 
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, accepted_privacy_policy: e.target.checked });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -78,76 +86,114 @@ export default function RegisterPage() {
   };
 
   const redirectToLogin = () => {
-    router.push(`/auth/login?email=${encodeURIComponent(formData.email)}`);
+    router.push(`/`);
+  };
+
+  const redirectToResetPassword = () => {
+    router.push("/auth/reset-password");
+  };
+
+  const toggleMenu = () => {
+    setMenuOpen((prev) => !prev);
   };
 
   return (
-    <div>
-      <h1>Registro</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          onChange={handleChange}
-          placeholder="Nome"
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          onBlur={handleEmailBlur}
-          placeholder="Email"
-          required
-        />
-        {errorMessage && (
-          <div>
-            <p style={{ color: "red" }}>{errorMessage}</p>
-            {errorMessage === "Esse email já existe." && (
-              <button type="button" onClick={redirectToLogin}>
-                Fazer login com esse email
-              </button>
-            )}
+    <section className={styles.container}>
+      {/* Lado Esquerdo: Formulário de Registro */}
+      <div className={styles.left}>
+        <div className={styles.leftContainer}>
+          <img src="/clubeLogo.svg" alt="Clube Logo" className={styles.logo} />
+          <div className={styles.registerContainer}>
+            <h2 className={styles.headerText}>Crie sua Conta</h2>
+            <p className={styles.subText}>
+              Preencha os dados abaixo para se cadastrar na nossa plataforma.
+            </p>
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <Input
+                type="text"
+                name="name"
+                placeholder="Nome"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                onBlur={handleEmailBlur}
+                required
+              />
+              <Input
+                type="phone"
+                name="phone"
+                placeholder="Telefone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                type="password"
+                name="password"
+                placeholder="Senha"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              <div className={styles.checkboxContainer}>
+                <input
+                  type="checkbox"
+                  name="accepted_privacy_policy"
+                  checked={formData.accepted_privacy_policy}
+                  onChange={handleCheckboxChange}
+                  required
+                  className={styles.checkbox}
+                />
+                <label> Aceito a política de privacidade</label>
+              </div>
+              <Button
+                type="submit"
+                text="Registrar"
+              />
+              {errorMessage && (
+                <div className={styles.errorMessage}>
+                  <p>{errorMessage}</p>
+                  {errorMessage === "Esse email já existe." && (
+                    <Button
+                      type="button"
+                      onClick={redirectToLogin}
+                      text="Fazer login com esse email"
+                      className={styles.linkButton}
+                    />
+                  )}
+                </div>
+              )}
+              {successMessage && (
+                <p className={styles.successMessage}>{successMessage}</p>
+              )}
+            </form>
+            <div className={styles.bottomLinks}>
+              <span onClick={redirectToResetPassword} className={styles.link}>
+                Esqueceu sua senha?
+              </span>
+              <span onClick={redirectToLogin} className={styles.link}>
+                Já possui conta? Fazer login
+              </span>
+            </div>
           </div>
-        )}
-        <input
-          type="phone"
-          name="phone"
-          onChange={handleChange}
-          placeholder="Telefone"
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          onChange={handleChange}
-          placeholder="Senha"
-          required
-        />
-        <div>
-          <input
-            type="checkbox"
-            name="accepted_privacy_policy"
-            onChange={(e) =>
-              setFormData({ ...formData, accepted_privacy_policy: e.target.checked })
-            }
-            required
-          />
-          <label> Aceito a política de privacidade</label>
         </div>
-        <button type="submit">Registrar</button>
-      </form>
-      {errorMessage && (
-        <div>
-          {errorMessage !== "Esse email já existe." && (
-            <>
-              {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-              {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-            </>
-          )}
-        </div>
-      )}
-    </div>
+      </div>
+
+      {/* Lado Direito: Layout e Navegação */}
+      <div className={styles.right}> 
+        <img
+          src="/imageHome.png"
+          alt="Imagem Home"
+          className={styles.imageHome}
+        />
+      </div>
+    </section>
   );
 }

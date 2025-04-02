@@ -48,17 +48,30 @@ async def create_club_upload(
     return new_club
 
 # Mantemos também os demais endpoints para listagem, consulta, atualização e exclusão
+# @router.get("/", response_model=List[ClubResponse])
+# def list_clubs(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+#     clubs = db.query(Club).filter(Club.owner_id == current_user.id).all()
+#     return clubs
+
+# @router.get("/{club_id}", response_model=ClubResponse)
+# def get_club(club_id: uuid.UUID, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+#     club = db.query(Club).filter(Club.id == club_id, Club.owner_id == current_user.id).first()
+#     if not club:
+#         raise HTTPException(status_code=404, detail="Clube não encontrado")
+#     return club
+
 @router.get("/", response_model=List[ClubResponse])
-def list_clubs(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    clubs = db.query(Club).filter(Club.owner_id == current_user.id).all()
+def list_clubs(db: Session = Depends(get_db)):
+    clubs = db.query(Club).all()
     return clubs
 
 @router.get("/{club_id}", response_model=ClubResponse)
-def get_club(club_id: uuid.UUID, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    club = db.query(Club).filter(Club.id == club_id, Club.owner_id == current_user.id).first()
+def get_club(club_id: uuid.UUID, db: Session = Depends(get_db)):
+    club = db.query(Club).filter(Club.id == club_id).first()
     if not club:
         raise HTTPException(status_code=404, detail="Clube não encontrado")
     return club
+
 
 # Endpoint para atualização do clube com upload de logo
 @router.put("/upload/{club_id}", response_model=ClubResponse)

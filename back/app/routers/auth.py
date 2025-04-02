@@ -19,7 +19,7 @@ load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY", "default_secret_key") 
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 120))
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 1200000))
 
 def create_access_token(data: dict):
     to_encode = data.copy()
@@ -249,3 +249,39 @@ def logout(response: Response):
     # Remove o cookie "access_token"
     response.delete_cookie(key="access_token", path="/")
     return {"message": "Logout realizado com sucesso."}
+
+@router.get("/is-admin")
+def is_admin(request: Request, db: Session = Depends(get_db)):
+    # Tenta obter o token do header "Authorization"
+    auth_header: Optional[str] = request.headers.get("Authorization")
+    token = None
+    if auth_header:
+        token = auth_header.replace("Bearer ", "").strip()
+    else:
+        # Se não tiver header, tenta obter do cookie "access_token"
+        token = request.cookies.get("access_token")
+        if token:
+            token = token.replace("Bearer ", "").strip()
+    
+    if not token:
+        raise HTTPException(status_code=400, detail="Token não fornecido.")
+    
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=400, detail="Token inválido: 'sub' não encontrado.")
+        
+        user = db.query(User).filter(User.id == uuid.UUID(user_id)).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+        
+        if getattr(user, "is_admin", False):
+            return {"is_admin": True, "message": "Usuário é administrador."}
+        else:
+            return {"is_admin": False, "message": "Usuário não é administrador."}
+    
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expirado.")
+    except jwt.JWTError as e:
+        raise HTTPException(status_code=401, detail=f"Token inválido: {str(e)}")

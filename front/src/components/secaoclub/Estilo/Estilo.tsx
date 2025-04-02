@@ -344,61 +344,94 @@ export default function EstiloSection({ clubId }: EstiloSectionProps) {
           {/* Coluna Direita: Cores, Vídeo, Promoção e Imagens */}
           <div className={styles.rightColumn}>
             <div className={styles.row}>
+
               <div className={styles.halfInputGroup}>
                 <label className={styles.label}>Cor Primária</label>
-                <input
-                  type="text"
-                  value={primaryColor}
-                  onChange={(e) => setPrimaryColor(e.target.value)}
-                  className={styles.inputLarge}
-                  placeholder="#000000"
-                />
-                <p className={styles.inputHint}>
-                  Defina a cor primária (ex: #000000).
-                </p>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <input
+                    type="color"
+                    value={primaryColor}
+                    className={styles.inputColor}
+                    onChange={(e) => setPrimaryColor(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    value={primaryColor}
+                    onChange={(e) => setPrimaryColor(e.target.value)}
+                    className={styles.inputLarge}
+                    placeholder="#000000"
+                  />
+                </div>
+                <p className={styles.inputHint}>Defina a cor primária (ex: #000000).</p>
               </div>
+
               <div className={styles.halfInputGroup}>
                 <label className={styles.label}>Cor Secundária</label>
-                <input
-                  type="text"
-                  value={secondaryColor}
-                  onChange={(e) => setSecondaryColor(e.target.value)}
-                  className={styles.inputLarge}
-                  placeholder="#ffffff"
-                />
-                <p className={styles.inputHint}>
-                  Defina a cor secundária (ex: #ffffff).
-                </p>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <input
+                    type="color"
+                    value={secondaryColor}
+                    className={styles.inputColor}
+                    onChange={(e) => setSecondaryColor(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    value={secondaryColor}
+                    onChange={(e) => setSecondaryColor(e.target.value)}
+                    className={styles.inputLarge}
+                    placeholder="#ffffff"
+                  />
+                </div>
+                <p className={styles.inputHint}>Defina a cor secundária (ex: #ffffff).</p>
               </div>
             </div>
+
             <div className={styles.row}>
               <div className={styles.halfInputGroup}>
                 <label className={styles.label}>Texto Primário</label>
-                <input
-                  type="text"
-                  value={primaryTextColor}
-                  onChange={(e) => setPrimaryTextColor(e.target.value)}
-                  className={styles.inputLarge}
-                  placeholder="#000000"
-                />
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <input
+                    type="color"
+                    value={primaryTextColor}
+                    className={styles.inputColor}
+                    onChange={(e) => setPrimaryTextColor(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    value={primaryTextColor}
+                    onChange={(e) => setPrimaryTextColor(e.target.value)}
+                    className={styles.inputLarge}
+                    placeholder="#000000"
+                  />
+                </div>
                 <p className={styles.inputHint}>Cor do texto principal.</p>
               </div>
+
               <div className={styles.halfInputGroup}>
                 <label className={styles.label}>Texto Secundário</label>
-                <input
-                  type="text"
-                  value={secondaryTextColor}
-                  onChange={(e) => setSecondaryTextColor(e.target.value)}
-                  className={styles.inputLarge}
-                  placeholder="#ffffff"
-                />
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <input
+                    type="color"
+                    value={secondaryTextColor}
+                    className={styles.inputColor}
+                    onChange={(e) => setSecondaryTextColor(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    value={secondaryTextColor}
+                    onChange={(e) => setSecondaryTextColor(e.target.value)}
+                    className={styles.inputLarge}
+                    placeholder="#ffffff"
+                  />
+                </div>
                 <p className={styles.inputHint}>Cor do texto secundário.</p>
               </div>
+
+
             </div>
             <div className={styles.fullRow}>
               <label className={styles.label}>Link de Vídeo</label>
-              <input
-                type="text"
+              <textarea
                 value={videoLink}
                 onChange={(e) => setVideoLink(e.target.value)}
                 className={styles.inputLarge}
@@ -408,6 +441,7 @@ export default function EstiloSection({ clubId }: EstiloSectionProps) {
                 Insira o link do vídeo (opcional).
               </p>
             </div>
+
             <div className={styles.row}>
               <div className={styles.halfInputGroup}>
                 <label className={styles.label}>Título da Promoção</label>

@@ -2,7 +2,6 @@
 .createPlanContainer {
   width: 100%;
   margin: 0 auto;
-  padding: 40px;
 }
 
 /* Container para a listagem/gerenciamento */
@@ -133,6 +132,7 @@
   cursor: default;
   transition: background-color 0.3s, border-color 0.3s;
   font-size: 15px;
+  width: 100%;
 }
 
 /* Botões (Adicionar e Remover) */
@@ -211,6 +211,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  width: 100%;
 }
 
 .planCard {
@@ -287,8 +288,14 @@
 
 
 @media screen and (max-width: 768px) {
-  .createPlanContainer {
+  .managementContainer {
+    width: 100%;
+    margin: 0 auto;
     padding: 0px;
   }
-  
+   
+  .createCard,
+  .planCard {
+    max-width: 100%;
+  }
 }

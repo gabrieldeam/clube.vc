@@ -63,3 +63,9 @@ export const logoutUser = async () => {
   const response = await api.post("auth/logout");
   return response.data;
 };
+
+// Verificar se o usuário é admin
+export const isAdmin = async () => {
+  const response = await api.get("auth/is-admin");
+  return response.data;
+};

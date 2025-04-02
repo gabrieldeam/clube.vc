@@ -13,6 +13,7 @@ export interface UserResponse {
   email: string;
   phone: string;
   is_verified: boolean;
+  support_id?: string;
 }
 
 export interface UserLogin {
