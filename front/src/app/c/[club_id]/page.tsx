@@ -6,10 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { getClub } from "@/services/club";
 import { getClubStyle } from "@/services/clubStyle";
+import { listSubscriptionPlans } from "@/services/subscriptionPlan";
 import { ClubResponse } from "@/types/club";
 import { ClubStyleResponse } from "@/types/clubStyle";
+import { SubscriptionPlanResponse } from "@/types/subscriptionPlan";
 import Button from "@/components/Button/Button";
 import styles from "./PublicClubPage.module.css";
+import BannerSlider from "@/components/BannerSlider/BannerSlider";
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
@@ -19,43 +22,14 @@ function getImageUrl(url: string) {
   return backendUrl + url;
 }
 
-/** Componente de Slider (apenas fade, sem movimento horizontal) */
-function BannerSlider({ banners }: { banners: string[] }) {
-  const [current, setCurrent] = useState(0);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % banners.length);
-    }, 10000);
-    return () => clearInterval(intervalId);
-  }, [banners.length]);
-
-  return (
-    <div className={styles.bannerSlider}>
-      {banners.map((banner, index) => (
-        <div
-          key={index}
-          className={`${styles.banner} ${index === current ? styles.active : ""}`}
-        >
-          <Image
-            src={getImageUrl(banner)}
-            alt={`Banner ${index + 1}`}
-            fill
-            sizes="100vw"
-            style={{ objectFit: "contain" }}
-          />
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export default function PublicClubPage() {
   const { club_id } = useParams() as { club_id: string };
   const [club, setClub] = useState<ClubResponse | null>(null);
   const [clubStyle, setClubStyle] = useState<ClubStyleResponse | null>(null);
+  const [subscriptionPlans, setSubscriptionPlans] = useState<SubscriptionPlanResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingStyle, setLoadingStyle] = useState(true);
+  const [loadingPlans, setLoadingPlans] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -101,6 +75,28 @@ export default function PublicClubPage() {
     };
   }, [club_id]);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchSubscriptionPlans() {
+      try {
+        const plans = await listSubscriptionPlans(club_id);
+        if (isMounted) setSubscriptionPlans(plans);
+      } catch (error) {
+        console.error("Erro ao carregar os planos:", error);
+      } finally {
+        if (isMounted) setLoadingPlans(false);
+      }
+    }
+
+    if (club_id) {
+      fetchSubscriptionPlans();
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [club_id]);
+
   if (loading || loadingStyle) return <p>Carregando...</p>;
   if (!club) return <p>Clube não encontrado.</p>;
 
@@ -118,23 +114,11 @@ export default function PublicClubPage() {
       <header className={styles.header}>
         <div className={styles.logoContainer}>
           <div className={styles.logoWrapper}>
-            <div className={styles.circleLogo}>
-              <Image
-                src="/c.svg"
-                alt="Logo C"
-                width={20}
-                height={20}
-                style={{ objectFit: "contain" }}
-              />
+            <div className={styles.circleLogo} style={{ background: clubStyle?.primary_color }}>
+              <Image src="/c.svg" alt="Logo C" width={20} height={20} style={{ objectFit: "contain" }} />
             </div>
             {club.logo ? (
-              <Image
-                src={getImageUrl(club.logo)}
-                alt={club.name}
-                width={150}
-                height={50}
-                style={{ objectFit: "contain" }}
-              />
+              <Image src={getImageUrl(club.logo)} alt={club.name} width={150} height={50} style={{ objectFit: "contain" }} />
             ) : (
               <span>Sem logo</span>
             )}
@@ -161,14 +145,43 @@ export default function PublicClubPage() {
           </div>
           <div className={styles.rightContent}>
             {clubStyle?.video_link && (
-              <div
-                className={styles.videoContainer}
-                dangerouslySetInnerHTML={{ __html: clubStyle.video_link }}
-              />
+              <div className={styles.videoContainer} dangerouslySetInnerHTML={{ __html: clubStyle.video_link }} />
             )}
           </div>
         </div>
       </main>
+
+      {/* Seção: Planos de Assinatura */}
+      <section className={styles.plansSection}>
+        <h2>Planos de Assinatura</h2>
+        {loadingPlans ? (
+          <p>Carregando planos...</p>
+        ) : subscriptionPlans.length === 0 ? (
+          <p>Nenhum plano disponível.</p>
+        ) : (
+          <div className={styles.plansGrid}>
+            {subscriptionPlans.map((plan) => (
+              <div key={plan.id} className={styles.planCard}>
+                <h3>{plan.name}</h3>
+                <p>{plan.description}</p>
+                <p>
+                  <strong>Preço:</strong> R$ {plan.price.toFixed(2)}
+                </p>
+                {plan.benefits && plan.benefits.length > 0 && (
+                  <div className={styles.benefitsContainer}>
+                    {plan.benefits.map((benefit, index) => (
+                      <div key={index} className={styles.benefitItem}>
+                        <Image src="/check.svg" alt="Check" width={16} height={16} />
+                        <span>{benefit.benefit}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }

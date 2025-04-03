@@ -229,12 +229,12 @@ export default function ClubDetailPage() {
             </nav>
           </aside>
           <main className={styles.mainContent}>
-            {activeTab === "details" && <DetailsSection />}
+            {activeTab === "details" && <DetailsSection clubId={clubId}/>}
             {activeTab === "plans" && <PlansSection />}
-            {activeTab === "createPlan" && <CreatePlanSection clubId={clubId} />}
-            {activeTab === "editClub" && <EditClubSection clubId={clubId} />}
-            {activeTab === "estilo" && <EstiloSection clubId={clubId} />}
-            {activeTab === "blog" && <BlogSection clubId={clubId} />}
+            {activeTab === "createPlan" && <CreatePlanSection clubId={clubId}/>}
+            {activeTab === "editClub" && <EditClubSection clubId={clubId}/>}
+            {activeTab === "estilo" && <EstiloSection clubId={clubId}/>}
+            {activeTab === "blog" && <BlogSection clubId={clubId}/>}
             {activeTab === "grupoConversas" && <GrupoConversasSection />}
             {activeTab === "engajamentos" && <EngajamentosSection />}
           </main>

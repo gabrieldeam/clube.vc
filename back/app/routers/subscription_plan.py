@@ -54,11 +54,22 @@ def list_subscription_plans(
     plans = db.query(SubscriptionPlan).filter(SubscriptionPlan.club_id == club_id).all()
     return plans
 
+@router.get("/", response_model=List[SubscriptionPlanResponse])
+def list_subscription_plans(
+    club_id: str, 
+    db: Session = Depends(get_db)
+):
+    """
+    Retorna todos os planos de assinatura para o clube informado (club_id).
+    Exemplo de URL: GET /subscription_plans/?club_id=<id_do_club>
+    """
+    plans = db.query(SubscriptionPlan).filter(SubscriptionPlan.club_id == club_id).all()
+    return plans
+
 @router.get("/{plan_id}", response_model=SubscriptionPlanResponse)
 def get_subscription_plan(
     plan_id: UUID, 
-    db: Session = Depends(get_db), 
-    current_user = Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     """
     Retorna os detalhes de um plano específico, dado o plan_id.
@@ -69,25 +80,6 @@ def get_subscription_plan(
             status_code=status.HTTP_404_NOT_FOUND, 
             detail="Plano não encontrado"
         )
-    return plan
-
-@router.delete("/{plan_id}", response_model=SubscriptionPlanResponse)
-def delete_subscription_plan(
-    plan_id: UUID, 
-    db: Session = Depends(get_db), 
-    current_user = Depends(get_current_user)
-):
-    """
-    Deleta um plano de assinatura específico, dado o plan_id.
-    """
-    plan = db.query(SubscriptionPlan).filter(SubscriptionPlan.id == plan_id).first()
-    if not plan:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail="Plano não encontrado"
-        )
-    db.delete(plan)
-    db.commit()
     return plan
 
 @router.put("/{plan_id}", response_model=SubscriptionPlanResponse)
