@@ -51,10 +51,6 @@
   justify-content: center;
 }
 
-.main {
-  padding: 40px;
-}
-
 .leftContent {
   flex: 1;
 }
@@ -89,14 +85,26 @@
 .plansSection h2 {
   margin-bottom: 20px;
   font-size: 24px;
-  text-align: center;
 }
 
 .plansGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+  justify-items: center;
 }
+
+.plansGrid:has(.planCard:only-child) {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+/* CASO TENHA EXATAMENTE 2 PLANOS: 2 colunas e centraliza o grid inteiro */
+.plansGrid:has(.planCard:nth-child(2):last-child) {
+  grid-template-columns: repeat(2, 1fr);
+  justify-content: center;     /* centraliza as duas colunas no container */
+}
+
 
 .planCard {
   background: #fff;
@@ -104,6 +112,7 @@
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
+  max-width: 600px;
 }
 
 .planCard:hover {
@@ -167,10 +176,6 @@
     width: 100%;
     height: auto;
     border: none;
-  }
-
-  .bannerSlider {
-    height: 40vh;
   }
   
   .main {

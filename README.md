@@ -33,7 +33,7 @@ Sysane é um projeto de API RESTful com frontend em Next.js e backend em FastAPI
 ### Frontend
 1. Instale as dependências:
    ```bash
-   cd client
+   cd front
    npm install
 
 2. Execute:

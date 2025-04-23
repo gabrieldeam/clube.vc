@@ -1,6 +1,7 @@
 .sliderContainer {
   position: relative;
   width: 100%;
+  height: 100%;
   overflow: hidden;
   padding: 20px;
 }
@@ -9,7 +10,7 @@
 .sliderWrapper {
   position: relative;
   width: 100%;
-  padding-top: 56.25%;
+  padding-top: 22%;
 }
 
 /* Cada banner será posicionado de forma absoluta dentro do sliderWrapper */
@@ -74,17 +75,16 @@
   background-color: rgba(255, 255, 255, 1);
 }
 
-@media (min-width: 768px) and (max-width: 1554px) {
-  .sliderContainer {
-    margin-top: 80px;
-  }
-}
-
 /* Responsividade */
 @media (max-width: 768px) {
   .sliderContainer {
-    margin-top: 140px;
     padding: 0px;
+  }
+
+  .sliderWrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 25%;
   }
 
   .controls {

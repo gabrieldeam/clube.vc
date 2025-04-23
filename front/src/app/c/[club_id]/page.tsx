@@ -131,10 +131,7 @@ export default function PublicClubPage() {
         </div>
       </header>
 
-      {/* Slider de Banners */}
-      <div className={styles.bannersContainer}>
         {banners.length > 0 && <BannerSlider banners={banners} />}
-      </div>
 
       {/* Seção de Conteúdo */}
       <main className={styles.main}>
